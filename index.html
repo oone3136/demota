@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div class="container mt-4">
+        <h3>Form Input Data</h3>
+        <form id="inputForm">
+          <div class="form-group">
+            <label for="id">ID:</label>
+            <input type="text" class="form-control" id="id" placeholder="Enter ID">
+          </div>
+          <div class="form-group">
+            <label for="nama">Nama Makanan:</label>
+            <input type="text" class="form-control" id="nama" placeholder="Enter Nama">
+          </div>
+          <div class="form-group">
+            <label for="descirption">Deskripsi :</label>
+            <input type="text" class="form-control" id="descirption" placeholder="Enter Description">
+          </div>
+          <div class="form-group">
+            <label for="diJual">Apakah makanan ini di jual :</label>
+            <select class="form-control" id="diJual">
+              <option value="1">Ya</option>
+              <option value="0">Tidak</option>
+            </select>
+          </div>
+          
+          <button type="submit" class="btn btn-primary">Proses dan Simpan</button>
+        </form>
+
+        <div class="mt-4">
+            <h3>Data:</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>nama</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody id="dataBody">
+                <!-- Tempatkan data di sini -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+
+    <script>
+    document.getElementById('inputForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      // Mengambil nilai dari form input
+      var id = document.getElementById('id').value;
+      var nama = document.getElementById('nama').value;
+      var descirption = document.getElementById('descirption').value;
+      var diJual = document.getElementById('diJual').value === '1';
+
+      // Membuat objek data yang akan dikirimkan ke REST API
+      var data = 
+      {
+        "nama": nama,
+        "descirption": descirption,
+        "diJual": diJual
+      }
+      // Mengirimkan data menggunakan metode POST melalui fetch API
+      fetch('http://localhost:8080/api/makanans', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(result => {
+        alert('Data berhasil dikirim:');
+        //console.log('Data berhasil dikirim:', result);
+        // Memperbarui tabel dengan data yang baru ditambahkan
+        var newRow = document.getElementById('dataBody').insertRow();
+        newRow.innerHTML = `<td>${result.id}</td><td>${result.nama}</td><td>${result.descirption}</td>`;
+      })
+      .catch(error => {
+        alert(error);
+        //console.error('Terjadi kesalahan:', error);
+      });
+    });
+  </script>
+    
+</body>
+</html>
